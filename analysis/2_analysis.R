@@ -70,7 +70,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable2",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 
@@ -82,7 +82,7 @@ run_write_models(
     list_IVs = "smartphone_ownership",
     binary_DV = TRUE,
     ext = "eTable2_covary_obesity2y",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 
@@ -94,7 +94,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable2",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # eTable 3 and 4----
@@ -106,7 +106,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable3_4",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # baseline from 2
@@ -118,7 +118,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable3_4",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 
@@ -130,7 +130,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable3_4",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # rerun with outliers removed (10h max per weekday, 17 h max per weekend, total of 10*5+17*2=84h max per week)
@@ -229,7 +229,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable6",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -240,7 +240,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable6",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 
@@ -253,7 +253,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable7",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 
@@ -265,7 +265,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable7",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # eTable 9----
@@ -277,7 +277,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable9",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -288,7 +288,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable9",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -299,7 +299,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable9",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 
@@ -312,7 +312,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable10",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -323,7 +323,7 @@ run_write_models(
     list_IVs = "smartphone_ownership",
     binary_DV = TRUE,
     ext = "eTable10",
-    CI_level = (1-0.05/1)
+    CI_level = (1-0.05)
 )
 
 # eTable 11----
@@ -335,7 +335,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable11",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # eTable 12----
@@ -347,7 +347,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = F,
   ext = "eTable12",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -358,7 +358,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = F,
   ext = "eTable12",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 
@@ -370,7 +370,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = F,
   ext = "eTable12",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # eTable 13 # Sensitivity 2 exclude 2y----
@@ -382,7 +382,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable13",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -393,7 +393,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable13",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 run_write_models(
@@ -404,7 +404,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable13",
-  CI_level = (1-0.05/1)
+  CI_level = (1-0.05)
 )
 
 # eTable 14 # EValues----
