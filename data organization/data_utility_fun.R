@@ -276,6 +276,7 @@ create_diagnosis_summary_var = function(data, NA0is0 ){
 make_cov_list <- function(c1, c2, add_vars, names_covars) {
   setNames(
     map(names_covars, ~ list(
+      covars_0 = c1,
       covars_1 = c(c1, add_vars[[.x]]),
       covars_2 = c(c2, add_vars[[.x]])
     )),

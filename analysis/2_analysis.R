@@ -14,8 +14,18 @@ covariates_list_aim2_2y <- readRDS("data/covariates_list_aim2_2y.rds")
 
 random_effects_s <- "(1 | site_br/family_id_br)"
 
-IVs_aim2 <- c("non_social_communication", "video_games", "watch_stream_TV_shows_movies_smartph_wsum",
-              "schoolyear_total_school_related_work_smartph_wsum", "visit_social_media_apps_smartph_wsum")
+# IVs_aim2 <- c("non_social_communication", "video_games", "watch_stream_TV_shows_movies_smartph_wsum",
+#               "schoolyear_total_school_related_work_smartph_wsum", "visit_social_media_apps_smartph_wsum")
+
+IVs_aim2 <- c(
+  "watch_stream_TV_shows_movies_smartph_wsum", #streaming
+  "single_player_video_games_smartph_wsum", # video games
+  "multiplayer_video_games_smartph_wsum", # video games
+  "text_cellphone_others_smartph_wsum", # texting
+  "visit_social_media_apps_smartph_wsum", # visiting social media sites 
+  "video_chat_not_for_school_smartph_wsum", # video-chatting 
+  "schoolyear_total_school_related_work_smartph_wsum" # school-related work
+)
 
 IVs_aim2 <- map_chr(IVs_aim2, ~ paste0("scale(", .x, ")"))
 
@@ -60,7 +70,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable2",
-  CI_level = (1-0.05/3)
+  CI_level = (1-0.05/1)
 )
 
 
@@ -72,7 +82,7 @@ run_write_models(
     list_IVs = "smartphone_ownership",
     binary_DV = TRUE,
     ext = "eTable2_covary_obesity2y",
-    CI_level = (1-0.05/3)
+    CI_level = (1-0.05/1)
 )
 
 
@@ -84,7 +94,7 @@ run_write_models(
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
   ext = "eTable2",
-  CI_level = (1-0.05/3)
+  CI_level = (1-0.05/1)
 )
 
 # eTable 3 and 4----
@@ -96,7 +106,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable3_4",
-  CI_level = (1-0.05/3)
+  CI_level = (1-0.05/1)
 )
 
 # baseline from 2
@@ -108,7 +118,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable3_4",
-    CI_level = (1-0.05/3)
+    CI_level = (1-0.05/1)
 )
 
 
@@ -120,7 +130,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable3_4",
-  CI_level = (1-0.05/3)
+  CI_level = (1-0.05/1)
 )
 
 # rerun with outliers removed (10h max per weekday, 17 h max per weekend, total of 10*5+17*2=84h max per week)
@@ -219,7 +229,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable6",
-    CI_level = (1-0.05/2)
+    CI_level = (1-0.05/1)
 )
 
 run_write_models(
@@ -230,7 +240,7 @@ run_write_models(
     random_eff = random_effects_s,
     binary_DV = TRUE,
     ext = "eTable6",
-    CI_level = (1-0.05/2)
+    CI_level = (1-0.05/1)
 )
 
 
@@ -243,7 +253,7 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable7",
-  CI_level = (1-0.05/2)
+  CI_level = (1-0.05/1)
 )
 
 
@@ -255,10 +265,10 @@ run_write_models(
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable7",
-  CI_level = (1-0.05/2)
+  CI_level = (1-0.05/1)
 )
 
-# Table 2----  Corrected for 2 DVs & 5 IVs----
+# eTable 9----
 run_write_models(
     data = aim2_df_no3y,
     list_DVs = "depression_dx_y",
@@ -266,8 +276,19 @@ run_write_models(
     list_covars = covariates_list_aim2$depression_dx_y,
     random_eff = random_effects_s,
     binary_DV = TRUE,
-    ext = "Table2",
-    CI_level = (1-0.05/10)
+    ext = "eTable9",
+    CI_level = (1-0.05/1)
+)
+
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = IVs_aim2,
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable9",
+  CI_level = (1-0.05/1)
 )
 
 run_write_models(
@@ -277,12 +298,12 @@ run_write_models(
     list_covars = covariates_list_aim2$lack_sleep,
     random_eff = random_effects_s,
     binary_DV = TRUE,
-    ext = "Table2",
-    CI_level = (1-0.05/10)
+    ext = "eTable9",
+    CI_level = (1-0.05/1)
 )
 
 
-# eTable 8
+# eTable 10----
 run_write_models(
   data = aim1_df,
   list_DVs = "depression_dx_y",
@@ -290,8 +311,8 @@ run_write_models(
   random_eff = random_effects_s,
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
-  ext = "eTable8_covary_bpm3y",
-  CI_level = (1-0.05/3)
+  ext = "eTable10",
+  CI_level = (1-0.05/1)
 )
 
 run_write_models(
@@ -301,11 +322,11 @@ run_write_models(
     random_eff = random_effects_s,
     list_IVs = "smartphone_ownership",
     binary_DV = TRUE,
-    ext = "eTable8_covary_obesity3y",
-    CI_level = (1-0.05/3)
+    ext = "eTable10",
+    CI_level = (1-0.05/1)
 )
 
-# eTable 9----
+# eTable 11----
 run_write_models(
   data = aim1_df,
   list_DVs = "bpm_T_bin_concern",
@@ -313,11 +334,46 @@ run_write_models(
   random_eff = random_effects_s,
   list_IVs = "smartphone_ownership",
   binary_DV = TRUE,
-  ext = "eTable9",
-  CI_level = (1-0.05/3)
+  ext = "eTable11",
+  CI_level = (1-0.05/1)
 )
 
-# eTable 10 # Sensitivity 2 exclude 2y----
+# eTable 12----
+run_write_models(
+  data = aim1_df,
+  list_DVs = "scale(mh_y_bpm_tscore)",
+  list_covars = covariates_list_aim1$mh_y_bpm_tscore,
+  random_eff = random_effects_s,
+  list_IVs = "smartphone_ownership",
+  binary_DV = F,
+  ext = "eTable12",
+  CI_level = (1-0.05/1)
+)
+
+run_write_models(
+  data = aim1_df,
+  list_DVs = "scale(bmi)",
+  list_covars = covariates_list_aim1$bmi,
+  random_eff = random_effects_s,
+  list_IVs = "smartphone_ownership",
+  binary_DV = F,
+  ext = "eTable12",
+  CI_level = (1-0.05/1)
+)
+
+
+run_write_models(
+  data = aim1_df,
+  list_DVs = "scale(sleep_duration_hrs)",
+  list_covars = covariates_list_aim1$lack_sleep,
+  random_eff = random_effects_s,
+  list_IVs = "smartphone_ownership",
+  binary_DV = F,
+  ext = "eTable12",
+  CI_level = (1-0.05/1)
+)
+
+# eTable 13 # Sensitivity 2 exclude 2y----
 run_write_models(
   data = aim2_df_no2y,
   list_DVs = "depression_dx_y",
@@ -325,8 +381,8 @@ run_write_models(
   list_covars = covariates_list_aim2_2y$depression_dx_y,
   random_eff = random_effects_s,
   binary_DV = TRUE,
-  ext = "eTable10",
-  CI_level = (1-0.05/3)
+  ext = "eTable13",
+  CI_level = (1-0.05/1)
 )
 
 run_write_models(
@@ -336,8 +392,8 @@ run_write_models(
   list_covars = covariates_list_aim2_2y$bmi_obesity,
   random_eff = random_effects_s,
   binary_DV = TRUE,
-  ext = "eTable10",
-  CI_level = (1-0.05/3)
+  ext = "eTable13",
+  CI_level = (1-0.05/1)
 )
 
 run_write_models(
@@ -347,16 +403,14 @@ run_write_models(
   list_covars = covariates_list_aim2_2y$lack_sleep,
   random_eff = random_effects_s,
   binary_DV = TRUE,
-  ext = "eTable10",
-  CI_level = (1-0.05/3)
+  ext = "eTable13",
+  CI_level = (1-0.05/1)
 )
 
-
-# eTable 11 # EValues----
+# eTable 14 # EValues----
 prop.table(table(aim2_df_no3y$depression_dx_y)) * 100 # rare
 prop.table(table(aim2_df_no3y$lack_sleep)) * 100 # not rare
 
-as.data.frame(evalues.OR(1.34, 1.01, 1.78, rare = TRUE)) %>% mutate(outcome = "Depression diagnosis") %>% # rare 1.34	1.01 – 1.78
-  bind_rows(as.data.frame(evalues.OR(1.35, 1.11, 1.64, rare = FALSE)) %>% mutate(outcome = "Insufficient Sleep")) # not rare 1.35	1.11 – 1.64
-
+as.data.frame(evalues.OR(1.34, 1.07, 1.69, rare = TRUE)) %>% mutate(outcome = "Depression diagnosis") %>% # rare 1.34	1.07 – 1.69
+  bind_rows(as.data.frame(evalues.OR(1.35, 1.15, 1.59, rare = FALSE)) %>% mutate(outcome = "Insufficient Sleep")) # not rare 1.35	1.15 - 1.5
 

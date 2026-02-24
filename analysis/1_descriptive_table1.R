@@ -33,12 +33,11 @@ factors <- c("sex_br", "race_multi", "race_white", "race_black", "race_asian", "
 
 # Table 1
 CreateTableOne(data = aim1_df,
-                vars = variables[variables %in% names(aim1_df)],
-                strata = "smartphone_ownership",
-                factorVars = factors)
-
-
-
+               vars = variables[variables %in% names(aim1_df)],
+               strata = "smartphone_ownership",
+               factorVars = factors,
+               addOverall = T)
+naniar::miss_var_summary(aim1_df %>% select(all_of(variables))) %>% View()
 
 # SD of schoolyear_total_smartph_wsum
 sd(aim2_df_no3y$schoolyear_total_smartph_wsum, na.rm = T)
@@ -46,13 +45,48 @@ mean(aim2_df_no3y$schoolyear_total_smartph_wsum, na.rm = T)
 
 
 # eTable 1 - Comparing included and not included
-CreateTableOne(data = df_compare,
-                vars = variables[variables %in% names(aim1_df)],
-                strata = "included",
-               factorVars = factors)
+CreateTableOne(data = df_compare, 
+               vars = variables[variables %in% names(aim1_df)],
+               strata = "included",
+               factorVars = factors,
+               addOverall = T)
+naniar::miss_var_summary(df_compare %>% select(all_of(variables))) %>% View()
+
+# eTable 8 - Descriptive statistics of specific smartphone usages
+IVs_aim2 <- c(
+  "watch_stream_TV_shows_movies_smartph_wsum", #streaming
+  "single_player_video_games_smartph_wsum", # video games
+  "multiplayer_video_games_smartph_wsum", # video games
+  "text_cellphone_others_smartph_wsum", # texting
+  "visit_social_media_apps_smartph_wsum", # visiting social media sites 
+  "video_chat_not_for_school_smartph_wsum", # video-chatting 
+  "schoolyear_total_school_related_work_smartph_wsum" # school-related work
+)
+etable8 <- aim2_df_no3y %>%
+  summarise(
+    across(
+      all_of(IVs_aim2),
+      list(
+        mean = ~ mean(., na.rm = TRUE),
+        sd = ~ sd(., na.rm = TRUE),
+        pct_missing = ~ mean(is.na(.)) * 100
+      ),
+      .names = "{.col}__{.fn}"
+    )
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("variable", ".value"),
+    names_sep = "__"
+  ) %>%
+  mutate(
+    mean_sd = sprintf("%.2f (%.2f)", mean, sd),
+    pct_missing = sprintf("%.2f", pct_missing)
+  ) %>%
+  select(variable, mean_sd, pct_missing)
 
 
-
+etable8
 
 
 

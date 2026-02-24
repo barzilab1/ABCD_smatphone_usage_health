@@ -27,10 +27,12 @@ get_mod_data <- function(merged_data) {
   add_aim1_main <- c(
     depression_dx_y = "depression_dx_y_2y",
     bmi_obesity     = "bmi_obesity_3y",
-    lack_sleep      = "sleep_duration_hrs_3y"
+    lack_sleep      = "sleep_duration_hrs_3y",
+    mh_y_bpm_tscore = "scale(mh_y_bpm_tscore_3y)",
+    bmi = "scale(bmi_2y)"
   )
 
-  covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, add_aim1_main, names_covars)
+  covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, add_aim1_main, c(names_covars, "mh_y_bpm_tscore", "bmi"))
 
   add_aim1_sens <- add_aim1_main
   add_aim1_sens["depression_dx_y"] <- "bpm_T_bin_concern_3y"
@@ -94,7 +96,8 @@ get_mod_data <- function(merged_data) {
            puberty_both_sexes_3y = puberty_both_sexes, late_or_post_puberty_both_sexes_3y = late_or_post_puberty_both_sexes,
            fc_y_pm_mean_3y = fc_y_pm_mean,
            sleep_duration_hrs_3y = sleep_duration_hrs,
-           bmi_obesity_3y = bmi_obesity, lack_sleep_3y = lack_sleep, bpm_T_bin_concern_3y = bpm_T_bin_concern) %>%
+           bmi_obesity_3y = bmi_obesity, lack_sleep_3y = lack_sleep, bpm_T_bin_concern_3y = bpm_T_bin_concern,
+           mh_y_bpm_tscore_3y = mh_y_bpm_tscore, bmi_3y = bmi) %>%
     left_join(
       merged_data %>%
         filter(session_id == "ses-02A") %>%
@@ -102,7 +105,8 @@ get_mod_data <- function(merged_data) {
                puberty_both_sexes_2y = puberty_both_sexes, late_or_post_puberty_both_sexes_2y = late_or_post_puberty_both_sexes,
                fc_y_pm_mean_2y = fc_y_pm_mean,
                sleep_duration_hrs_2y = sleep_duration_hrs,
-               bmi_obesity_2y = bmi_obesity, lack_sleep_2y = lack_sleep, depression_dx_y_2y = depression_dx_y, bpm_T_bin_concern_2y = bpm_T_bin_concern)
+               bmi_obesity_2y = bmi_obesity, lack_sleep_2y = lack_sleep, depression_dx_y_2y = depression_dx_y, bpm_T_bin_concern_2y = bpm_T_bin_concern,
+               mh_y_bpm_tscore_2y = mh_y_bpm_tscore, bmi_2y = bmi)
     )
 
   aim1_df <- aim1_df %>% left_join(aim1_df_2_3y) %>%
