@@ -32,8 +32,8 @@ df_aim1 <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
   OR      = c(1.24, 0.91, 1.37),
-  CI_low  = c(0.75, 0.52, 1.00),
-  CI_high = c(2.05, 1.60, 1.86)
+  CI_low  = c(0.82, 0.57, 1.06),
+  CI_high = c(1.87, 1.45, 1.76)
 )
 
 fig_aim1 <- make_forest_plot(
@@ -44,7 +44,7 @@ fig_aim1 <- make_forest_plot(
   title = "Past-Year Smartphone Acquisition"
 )
 
-ggsave("plots/figure1_fixed.pdf", fig_aim1, width = 12, height = 8, dpi = 320)
+ggsave("plots/figure1.pdf", fig_aim1, width = 12, height = 8, dpi = 320)
 
 
 
@@ -54,8 +54,8 @@ df_aim2 <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
   OR      = c(1.34, 1.29, 1.35),
-  CI_low  = c(1.01, 0.90, 1.11),
-  CI_high = c(1.78, 1.84, 1.64)
+  CI_low  = c(1.07, 0.96, 1.15),
+  CI_high = c(1.69, 1.73, 1.59)
 )
 
 fig_aim2a <- make_forest_plot(
@@ -74,8 +74,8 @@ ggsave("plots/figure2.pdf", fig_aim2a, width = 12, height = 8, dpi = 320)
 df_depression_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high,
   "<2 hours",   1.00, 1.00, 1.00,
-  "2-5h/day",   1.61, 0.90, 2.86,
-  ">5h/day",    2.87, 1.23, 6.72
+  "2-5h/day",   1.61, 0.97, 2.66,
+  ">5h/day",    2.87, 1.37, 6.04
 ) %>%
   mutate(
     Category = factor(
@@ -98,8 +98,8 @@ fig_depression_dos <- make_forest_plot(
 df_sleep_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high,
   "<2 hours",  1.00, 1.00, 1.00,
-  "2-5h/day",  1.62, 1.12, 2.34,
-  ">5h/day",   2.03, 1.13, 3.64
+  "2-5h/day",  1.62, 1.17, 2.23,
+  ">5h/day",   2.03, 1.22, 3.39
 ) %>%
   mutate(
     Category = factor(
@@ -118,46 +118,43 @@ fig_sleep_dos <- make_forest_plot(
     y_title = "Daily Smartphone Use Duration")
 
 
-df_outside_room <- tibble(
-    Outcome = factor(c("Depression", "Insufficient Sleep"),
-                     levels = c("Insufficient Sleep", "Depression")),
-    OR      = c(0.97, 0.68),
-    CI_low  = c(0.52, 0.46),
-    CI_high = c(1.80, 0.99)
-)
-
-fig_df_outside_room <- make_forest_plot(
-    df_outside_room,
-    color = "#007070",
-    min_x = 0.45,
-    max_x = 2,
-    title = "Smartphone Out of Bedroom "
-)
-
 spacer <- ggplot() + theme_void()
 
 row1 <- ggarrange(fig_depression_dos, labels = c("A"), font.label = list(size = 24, color = "black"))
 row2 <- ggarrange(fig_sleep_dos, labels = c("B"), font.label = list(size = 24, color = "black"))
-row3 <- ggarrange(fig_df_outside_room, labels = c("C"), font.label = list(size = 24, color = "black"))
 
 figure_3 <- ggarrange(
     row1,
     spacer,
     row2,
-    spacer,
-    row3,
     ncol = 1,
-    heights = c(1, 0.08, 1, 0.08, 1),
+    heights = c(1, 0.08, 1),
     align = "hv"
 )
 
 
-ggsave("plots/figure_3.pdf",
-       figure_3, width = 12, height = 18, dpi = 320)
+ggsave("plots/figure_3.pdf", figure_3, width = 12, height = 14, dpi = 320)
 
 
+#  FIGURE 4----
 
+df_outside_room <- tibble(
+  Outcome = factor(c("Depression", "Insufficient Sleep"),
+                   levels = c("Insufficient Sleep", "Depression")),
+  OR      = c(0.97, 0.68),
+  CI_low  = c(0.56, 0.49),
+  CI_high = c(1.66, 0.95)
+)
 
+fig_df_outside_room <- make_forest_plot(
+  df_outside_room,
+  color = "#007070",
+  min_x = 0.45,
+  max_x = 2,
+  title = "Smartphone Out of Bedroom "
+)
+
+ggsave("plots/figure4.pdf", fig_df_outside_room, width = 12, height = 8, dpi = 320)
 
 
 

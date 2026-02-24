@@ -15,6 +15,7 @@ variables <- c(
   "age_br", # Age at 4-year
   "sex_br", "race_multi", "race_white", "race_black", "race_asian", "race_haw_pac", "race_aian", "race_other", "race_other_new",
   "ethnicity_hisp_br", #"parents_high_edu_text_br", 
+  "depression_dx_y", "bpm_T_bin_concern", "bmi_obesity", "lack_sleep",
   # Covariates at 3-year
   "age_br_3y", "household_income_3y", "parents_high_edu_text_br_3y", "parents_high_edu_br_master_above_3y",
   "puberty_both_sexes_3y", "late_or_post_puberty_both_sexes_3y", "fc_y_pm_mean_3y",
@@ -25,6 +26,7 @@ variables <- c(
 
 factors <- c("sex_br", "race_multi", "race_white", "race_black", "race_asian", "race_haw_pac", "race_aian", "race_other", "race_other_new",
              "ethnicity_hisp_br", #"parents_high_edu_text_br", "parents_high_edu_br_master_above",
+             "depression_dx_y", "bpm_T_bin_concern", "bmi_obesity", "lack_sleep",
              "parents_high_edu_text_br_3y", "parents_high_edu_br_master_above_3y",
              "puberty_both_sexes_3y", "late_or_post_puberty_both_sexes_3y",
              "bmi_obesity_3y", "lack_sleep_3y", "bpm_T_bin_concern_3y",
@@ -35,7 +37,8 @@ factors <- c("sex_br", "race_multi", "race_white", "race_black", "race_asian", "
 CreateTableOne(data = aim1_df,
                vars = variables[variables %in% names(aim1_df)],
                strata = "smartphone_ownership",
-               factorVars = factors,
+               factorVars = factors, 
+               includeNA = T,
                addOverall = T)
 naniar::miss_var_summary(aim1_df %>% select(all_of(variables))) %>% View()
 
@@ -49,6 +52,7 @@ CreateTableOne(data = df_compare,
                vars = variables[variables %in% names(aim1_df)],
                strata = "included",
                factorVars = factors,
+               includeNA = T,
                addOverall = T)
 naniar::miss_var_summary(df_compare %>% select(all_of(variables))) %>% View()
 
