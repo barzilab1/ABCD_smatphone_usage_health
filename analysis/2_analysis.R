@@ -14,9 +14,6 @@ covariates_list_aim2_2y <- readRDS("data/covariates_list_aim2_2y.rds")
 
 random_effects_s <- "(1 | site_br/family_id_br)"
 
-# IVs_aim2 <- c("non_social_communication", "video_games", "watch_stream_TV_shows_movies_smartph_wsum",
-#               "schoolyear_total_school_related_work_smartph_wsum", "visit_social_media_apps_smartph_wsum")
-
 IVs_aim2 <- c(
   "watch_stream_TV_shows_movies_smartph_wsum", #streaming
   "single_player_video_games_smartph_wsum", # video games
@@ -133,11 +130,6 @@ run_write_models(
   CI_level = (1-0.05)
 )
 
-# rerun with outliers removed (10h max per weekday, 17 h max per weekend, total of 10*5+17*2=84h max per week)
-# aim2_df_no3y$schoolyear_total_smartph_wsum_clean = ifelse(!is.na(aim2_df_no3y$schoolyear_total_smartph_wsum),
-#                                                     pmin(aim2_df_no3y$schoolyear_total_smartph_wsum, 84),
-#                                                     NA)
-
 
 # eTable 5----
 ## Models during weekend and weekday
@@ -207,16 +199,6 @@ run_write_models(
   ext = "eTable5_weekend",
   CI_level = (1-0.05)
 )
-
-
-# rerun with outliers removed (10h max per weekday, 17 h max per weekend)
-# aim2_df_no3y$nt_y_stq__screen__wkdy__tot__pair_hr_min_002_clean = ifelse(!is.na(aim2_df_no3y$nt_y_stq__screen__wkdy__tot__pair_hr_min_002),
-#                                                                          pmin(aim2_df_no3y$nt_y_stq__screen__wkdy__tot__pair_hr_min_002, 10),
-#                                                                          NA)
-# aim2_df_no3y$nt_y_stq__screen__wknd__tot__pair_hr_min_002_clean = ifelse(!is.na(aim2_df_no3y$nt_y_stq__screen__wknd__tot__pair_hr_min_002),
-#                                                                           pmin(aim2_df_no3y$nt_y_stq__screen__wknd__tot__pair_hr_min_002, 17),
-#                                                                           NA)
-
 
 
 # eTable 6 smartphone time categories----
