@@ -73,7 +73,7 @@ ggsave("plots/figure2.pdf", fig_aim2a, width = 12, height = 8, dpi = 320)
 
 df_depression_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high,
-  "<2 hours",   1.00, 1.00, 1.00,
+  # "<2 hours",   1.00, 1.00, 1.00,
   "2-5h/day",   1.61, 0.97, 2.66,
   ">5h/day",    2.87, 1.37, 6.04
 ) %>%
@@ -81,7 +81,7 @@ df_depression_dos <- tribble(
     Category = factor(
       Category,
       levels = c(
-        "<2 hours",
+        # "<2 hours",
         "2-5h/day",
         ">5h/day")))
 
@@ -97,7 +97,7 @@ fig_depression_dos <- make_forest_plot(
 
 df_sleep_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high,
-  "<2 hours",  1.00, 1.00, 1.00,
+  # "<2 hours",  1.00, 1.00, 1.00,
   "2-5h/day",  1.62, 1.17, 2.23,
   ">5h/day",   2.03, 1.22, 3.39
 ) %>%
@@ -105,7 +105,7 @@ df_sleep_dos <- tribble(
     Category = factor(
       Category,
       levels = c(
-          "<2 hours",
+          # "<2 hours",
           "2-5h/day",
           ">5h/day")))
 
