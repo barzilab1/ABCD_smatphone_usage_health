@@ -300,40 +300,38 @@ generate_table1<- function(data, vars, strata, factor_vars = NULL, event_name = 
 
 
 make_forest_plot <- function(
-    df,
-    x = OR, y = Outcome,
-    xmin = CI_low, xmax = CI_high,
-    color = "darkblue",
-    x_breaks = seq(0.5, 2.5, 0.5),
-    min_x = NULL,
-    max_x = NULL,
-    facet_var = NULL,
-    title = "",
-    y_title = NULL) {
-
-    min_x =  ifelse(is.null(min_x), min(x_breaks), min_x)
-    max_x =  ifelse(is.null(max_x), max(x_breaks), max_x)
-
-  p <- ggplot(df, aes(x = {{ x }}, y = {{ y }})) +
+    df, x, y, xmin, xmax,
+    n_var = NULL,
+    min_x = 0.4, max_x = 2.3,
+    x_breaks = NULL,
+    x_label = "Odds Ratio (95% Confidence Interval)",
+    y_label = NULL,
+    title = ""
+) {
+  
+  p <- ggplot(df, aes({{ x }}, factor({{ y }}, levels = rev(unique({{ y }}))))) +
     geom_vline(xintercept = 1, linetype = "dashed",
-               color = "#B22222", linewidth = 1.3) +
+               color = "#B22222", linewidth = 1.2) +
     geom_errorbarh(aes(xmin = {{ xmin }}, xmax = {{ xmax }}),
-                   height = 0.15, size = 1.3, color = color) +
-    geom_point(size = 5, color = color) +
+                   height = 0.15, size = 1.2, color = "darkblue") +
+    geom_point(size = 5, color = "darkblue") +
     scale_x_continuous(
-      name = "Odds Ratio (95% Confidence Interval)",
+      name = x_label,
       breaks = x_breaks,
-      limits = c(min_x, max_x)
+      limits = c(min_x, max_x * 1.2)
     ) +
-    labs(title = title, y = y_title) +
+    labs(title = title, y = y_label) +
     theme_abcd()
-
-  if (!is.null(facet_var)) {
-    p <- p + facet_wrap(vars({{ facet_var }}), ncol = 1, scales = "free_y") +
-      theme(strip.text = element_text(size = 20, face = "bold"))
-  }
+  
+  if (!is.null(substitute(n_var)))
+    p <- p +
+      geom_text(aes(label = paste0("n = ", {{ n_var }})),
+                x = max_x * 1.005,
+                hjust = 0, size = 8, fontface = "bold")
+  
   p
 }
+
 
 prep_forest_activities <- function(df, outcome_levels, top_predictor = "Social media") {
 
