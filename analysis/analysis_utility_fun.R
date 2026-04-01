@@ -397,3 +397,66 @@ make_ci_barplot <- function(
       axis.title.y = element_text(size = 22, face = "bold")
     )
 }
+
+# https://rdrr.io/cran/mice/src/R/pool.vector.R
+# Rubin's rules for scalar estimates
+pool_MI_from_table <- function(input_table, digits = 2) {
+  
+  long_df <- input_table %>%
+    pivot_longer(
+      cols = -outcome,
+      names_to = c(".value", "imp"),
+      names_pattern = "(OR|L|U)_(\\d+)"
+    ) %>%
+    mutate(imp = as.numeric(imp))
+
+  pool_rubin <- function(df) {
+    
+    df <- df %>%
+      mutate(
+        logOR = log(OR),
+        SE = (log(U) - log(L)) / (2 * 1.96),
+        VAR = SE^2
+      )
+    
+    m <- nrow(df)
+    
+    Q_bar <- mean(df$logOR) # pooled estimate
+    U_bar <- mean(df$VAR)
+    B <- var(df$logOR)
+    T_var <- U_bar + (1 + 1/m) * B # total variance
+    
+    SE_total <- sqrt(T_var)
+    
+    OR <- exp(Q_bar)
+    lower <- exp(Q_bar - 1.96 * SE_total)
+    upper <- exp(Q_bar + 1.96 * SE_total)
+    
+    z <- Q_bar / SE_total
+    p <- 2 * (1 - pnorm(abs(z)))
+    
+    data.frame(
+      OR = OR,
+      CI_lower = lower,
+      CI_upper = upper,
+      p = p
+    )
+  }
+
+  final_results <- long_df %>%
+    group_by(outcome) %>%
+    group_modify(~ pool_rubin(.x)) %>%
+    ungroup()
+  
+  final_results <- final_results %>%
+    mutate(
+      OR = round(OR, digits),
+      CI_lower = round(CI_lower, digits),
+      CI_upper = round(CI_upper, digits),
+      CI = paste0(CI_lower, "–", CI_upper),
+      p = ifelse(p < 0.001, "<0.001", round(p, 4))
+    ) %>%
+    select(outcome, OR, CI, p)
+  
+  return(final_results)
+}

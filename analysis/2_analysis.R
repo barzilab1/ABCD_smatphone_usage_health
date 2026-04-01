@@ -130,6 +130,147 @@ run_write_models(
   CI_level = (1-0.05)
 )
 
+###eTable 3 and 4 GAM----
+### random-effect smooths----
+aim2_df_no3y <- as.data.frame(aim2_df_no3y)
+
+aim2_df_no3y$site_br <- factor(aim2_df_no3y$site_br)
+aim2_df_no3y$family_id_br <- factor(aim2_df_no3y$family_id_br)
+aim2_df_no3y$sex_br <- factor(aim2_df_no3y$sex_br)
+aim2_df_no3y$race_black <- factor(aim2_df_no3y$race_black)
+aim2_df_no3y$ethnicity_hisp_br <- factor(aim2_df_no3y$ethnicity_hisp_br)
+
+library(mgcv)
+library(sjPlot)
+#### method 1----
+
+aim2_df_no3y$site_family <- interaction(aim2_df_no3y$site_br, aim2_df_no3y$family_id_br, drop = TRUE)
+
+gam_dep_3 <- gam(
+  depression_dx_y ~ 
+    age_br + sex_br + race_black + ethnicity_hisp_br +
+    household_income + parents_high_edu_br + puberty_both_sexes +
+    fc_y_pm_mean + nt_p_yst_001___2 + nt_p_yst_001___3 +
+    nt_p_yst_001___4 + nt_p_yst_001___6 +
+    depression_dx_y_2y +
+    s(schoolyear_total_smartph_wsum) +
+    s(site_br, bs = "re") +
+    s(site_family, bs = "re"),
+  family = binomial(link = "logit"),
+  data = aim2_df_no3y,
+  method = "REML"
+) # running this
+tab_model(gam_dep_3)
+
+#### method 2----
+library(gamm4)
+gamm4_dep_1 <- gamm4(
+  depression_dx_y ~ 
+    age_br + sex_br + race_black + ethnicity_hisp_br +
+    household_income + parents_high_edu_br + puberty_both_sexes +
+    fc_y_pm_mean +
+    nt_p_yst_001___2 + nt_p_yst_001___3 +
+    nt_p_yst_001___4 + nt_p_yst_001___6 + depression_dx_y_2y +
+    s(schoolyear_total_smartph_wsum),
+  random = ~ (1 | site_br/family_id_br),
+  data   = aim2_df_no3y,
+  family = binomial(link = "logit")
+)
+
+gamm4_dep_1.2 <- gamm4(
+  depression_dx_y ~ 
+    age_br + sex_br + race_black + ethnicity_hisp_br +
+    household_income + parents_high_edu_br + puberty_both_sexes +
+    fc_y_pm_mean +
+    nt_p_yst_001___2 + nt_p_yst_001___3 +
+    nt_p_yst_001___4 + nt_p_yst_001___6 + depression_dx_y_2y +
+    s(schoolyear_total_smartph_wsum),
+  random = ~ (1 | site_br/family_id_br),
+  data   = aim2_df_no3y,
+  family = binomial(link = "logit")
+)
+
+
+tab_model(gamm4_dep_1)
+
+
+#### method 3----
+library(mgcv)
+library(nlme)  # required for gamm()
+
+gam_dep_gamm <- gamm(
+  depression_dx_y ~ 
+    age_br + sex_br + race_black + ethnicity_hisp_br +
+    household_income + parents_high_edu_br + puberty_both_sexes +
+    fc_y_pm_mean + nt_p_yst_001___2 + nt_p_yst_001___3 +
+    nt_p_yst_001___4 + nt_p_yst_001___6 + depression_dx_y_2y +
+    s(schoolyear_total_smartph_wsum),  # nonlinear smartphone effect
+  family = binomial(link = "logit"),
+  data = aim2_df_no3y,
+  random = list(
+    site_br = ~1,           # site random intercept
+    family_id_br = ~1       # family random intercept (nested via data structure)
+  )
+)
+
+
+library(dplyr)
+
+# Extract from GAM component (fixed effects + smooths)
+gam_sum <- summary(gam_dep_gamm$gam)
+
+# Create comprehensive OR table
+or_table <- data.frame(
+  term = rownames(gam_sum$p.table),
+  OR = exp(gam_sum$p.table[, "Estimate"]),
+  SE = gam_sum$p.table[, "Std. Error"],
+  CI_low = exp(gam_sum$p.table[, "Estimate"] - 1.96 * gam_sum$p.table[, "Std. Error"]),
+  CI_high = exp(gam_sum$p.table[, "Estimate"] + 1.96 * gam_sum$p.table[, "Std. Error"]),
+  p_value = gam_sum$p.table[, "Pr(>|t|)"]
+) %>%
+  mutate(
+    OR_95CI = sprintf("%.2f (%.2f-%.2f)", OR, CI_low, CI_high),
+    p_formatted = case_when(
+      p_value < 0.001 ~ "<0.001",
+      TRUE ~ sprintf("%.3f", p_value)
+    ),
+    sig = case_when(
+      p_value < 0.001 ~ "***",
+      p_value < 0.01 ~ "**",
+      p_value < 0.05 ~ "*",
+      p_value < 0.10 ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  filter(!grepl("Intercept", term))  # Remove intercept for cleaner table
+
+# Print full table
+print(or_table[, c("term", "OR_95CI", "p_formatted", "sig")], row.names = FALSE)
+
+# Smartphone smooth significance (separate F-test)
+cat("\n=== Smartphone Smooth (s(schoolyear_total_smartph_wsum)) ===\n")
+print(gam_sum$s.table)
+
+## Plots----
+### mothod 1-----
+# Basic smooth plot (smartphone effect)
+plot(gam_dep_3, select = 1, shade = TRUE, shade.col = "lightblue", 
+     main = "Nonlinear Effect of Smartphone Use on Depression Odds",
+     xlab = "Smartphone Hours (Total)", ylab = "Partial Effect (log-odds)")
+
+# Plot from GAM component
+plot(gamm4_dep_1$gam, select = 1, shade = TRUE, shade.col = "lightblue",
+     main = "Smartphone Use Effect (gamm4)",
+     xlab = "Smartphone Hours", ylab = "Partial Effect")
+
+# Plot from GAM component  
+plot(gam_dep_gamm$gam, select = 1, shade = TRUE, shade.col = "lightblue",
+     main = "Smartphone Use Effect (gamm)",
+     xlab = "Smartphone Hours", ylab = "Partial Effect")
+
+summary(gam_dep_3)$s.table
+summary(gamm4_dep_1$gam)$s.table
+summary(gam_dep_gamm$gam)$s.table
 
 # eTable 5----
 ## Models during weekend and weekday
@@ -215,6 +356,17 @@ run_write_models(
 )
 
 run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = "schoolyear_total_smartph_wsum_wmean_perday_cat",
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable6",
+  CI_level = (1-0.05)
+)
+
+run_write_models(
     data = aim2_df_no3y,
     list_DVs = "lack_sleep",
     list_IVs = "schoolyear_total_smartph_wsum_wmean_perday_cat",
@@ -232,6 +384,17 @@ run_write_models(
   list_DVs = "depression_dx_y",
   list_IVs = c("nt_y_stq__sleep_002_phone_outside_room"),
   list_covars = covariates_list_aim2$depression_dx_y,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable7",
+  CI_level = (1-0.05)
+)
+
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = c("nt_y_stq__sleep_002_phone_outside_room"),
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable7",

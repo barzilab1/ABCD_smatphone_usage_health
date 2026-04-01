@@ -131,7 +131,7 @@ get_abcd_general <- function(){
 
   abcd_general_stc <- abcd_general_stc %>% mutate(
     family_id_br = ab_g_stc__design_id__fam,
-
+    abcd_pps_weight = ab_g_stc__cohort_acsps,
     # ab_g_stc__cohort_dob #DOB
 
     ethnicity_hisp_br = as.numeric(as.character(ab_g_stc__cohort_ethn)) %% 2,
@@ -170,7 +170,7 @@ get_abcd_general <- function(){
   ############################################################
 
   abcd_basic_static = merge(race_df,
-                            abcd_general_stc[ ,c("participant_id", grep("race|_br$|^sex$", colnames(abcd_general_stc), value = T))],
+                            abcd_general_stc[ ,c("participant_id", grep("race|_br$|^sex$|weight", colnames(abcd_general_stc), value = T))],
                             all = T)
 
 
