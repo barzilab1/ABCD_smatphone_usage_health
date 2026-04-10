@@ -5,7 +5,6 @@
 # library(stringr)
 # library(dplyr)
 # library(targets)
-# targets::tar_load(merged_data)
 # source("data organization/data_utility_fun.R")
 
 get_mod_data <- function(merged_data) {
@@ -150,8 +149,7 @@ get_mod_data <- function(merged_data) {
                                                                           "visit_social_media_apps_smartph_wsum",
                                                                           "schoolyear_total_school_related_work_smartph_wsum")])
   saveRDS(merged_data, "data/merged_data_ext.rds")
-  # Create data for Aim 1
-  no_sm_2y_ids <- merged_data %>% filter(session_id == "ses-02A" & smartphone_ownership == 0) %>% pull(participant_id)
+  # Create subset
   no_sm_3y_ids <- merged_data %>% filter(session_id == "ses-03A" & smartphone_ownership == 0) %>% pull(participant_id)
 
   aim1_df <- merged_data %>%
@@ -220,10 +218,6 @@ get_mod_data <- function(merged_data) {
     mutate(across(ends_with("_cat"),~ relevel(.x, ref = cut_levels[1])))
 
 
-  aim2_df_no2y <- aim2_df %>%
-    filter(participant_id %in% no_sm_2y_ids) %>%
-    left_join(aim1_df_2_3y)
-
   aim2_df_no3y <- aim2_df %>%
     filter(participant_id %in% no_sm_3y_ids) %>%
     left_join(aim1_df_2_3y)
@@ -238,7 +232,6 @@ get_mod_data <- function(merged_data) {
   saveRDS(aim1_df, "data/aim1_df.rds")
   saveRDS(aim1_df %>% select(participant_id) %>% pull(), "data/cohort_ids.rds")
   saveRDS(aim2_df, "data/aim2_df.rds")
-  saveRDS(aim2_df_no2y, "data/aim2_df_no2y.rds")
   saveRDS(aim2_df_no3y, "data/aim2_df_no3y.rds")
   saveRDS(df_compare, "data/df_compare.rds")
   saveRDS(covariates_list_aim1_main, "data/covariates_list_aim1.rds")

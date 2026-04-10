@@ -9,7 +9,7 @@
 # library(miceRanger)
 # source("data organization/data_utility_fun.R")
 
-get_fully_imp_data <- function(merged_data) {
+get_imp_data <- function(merged_data) {
   
   # Covariates 
   covars <- c("age_br", "sex_br",
@@ -94,7 +94,7 @@ get_fully_imp_data <- function(merged_data) {
             all_of(vars_to_replace),
             ~ if_else(
               session_id == "ses-04A",
-              get(paste0(cur_column(), "_orig")), # Using get() to fetch the joined column
+              get(paste0(cur_column(), "_orig")),
               .
             )
           )
@@ -164,9 +164,6 @@ get_fully_imp_data <- function(merged_data) {
     )
   }
   
-  # no_sm_2y_ids <- merged_data %>% filter(session_id == "ses-02A" & smartphone_ownership == 0) %>% pull(participant_id)
-  # no_sm_3y_ids <- merged_data %>% filter(session_id == "ses-03A" & smartphone_ownership == 0) %>% pull(participant_id)
-  
   create_aim_datasets <- function(df, 
                                   # no_sm_2y_ids, no_sm_3y_ids,
                                   smartphone_vars,
@@ -212,40 +209,27 @@ get_fully_imp_data <- function(merged_data) {
                                                   ref=cut_levels[1])))
     
     # ---------- subsets ----------
-    # aim2_df_no2y <- aim2_df %>%
-    #   filter(participant_id %in% no_sm_2y_ids) %>%
-    #   left_join(join_df, by="participant_id")
-    
     aim2_df_no3y <- aim2_df %>%
-      # filter(participant_id %in% no_sm_3y_ids) %>%
       left_join(join_df, by="participant_id")
     
     # ---------- add lack_sleep only for sleep ----------
     if (identical(data_type, "sleep")) {
       add_sleep <- \(d) mutate(d, lack_sleep = as.numeric(sleep_duration_hrs < 8))
       aim1_df <- add_sleep(aim1_df)
-      # aim2_df <- add_sleep(aim2_df)
-      # aim2_df_no2y <- add_sleep(aim2_df_no2y)
       aim2_df_no3y <- add_sleep(aim2_df_no3y)
     }
     
     # ---------- imputation id ----------
     if (!is.null(imputation_id))
       aim1_df$imputation <- aim2_df_no3y$imputation <- imputation_id
-        # aim2_df$imputation <- 
-      # aim2_df_no2y$imputation 
     
     list(aim1_df=aim1_df, aim2_df_no3y=aim2_df_no3y )
-         # aim2_df=aim2_df,
-         # aim2_df_no2y=aim2_df_no2y )
   }
   
   
   aim_dep_list <- lapply(seq_along(dep_merged_list), function(i) {
     create_aim_datasets(
       df = dep_merged_list[[i]],
-      # no_sm_2y_ids = no_sm_2y_ids,
-      # no_sm_3y_ids = no_sm_3y_ids,
       smartphone_vars = smartphone_vars,
       merged_data = merged_data,
       imputation_id = i,
@@ -256,8 +240,6 @@ get_fully_imp_data <- function(merged_data) {
   aim_obesity_list <- lapply(seq_along(obesity_merged_list), function(i) {
     create_aim_datasets(
       df = obesity_merged_list[[i]],
-      # no_sm_2y_ids = no_sm_2y_ids,
-      # no_sm_3y_ids = no_sm_3y_ids,
       smartphone_vars = smartphone_vars,
       merged_data = merged_data,
       imputation_id = i,
@@ -268,8 +250,6 @@ get_fully_imp_data <- function(merged_data) {
   aim_sleep_list <- lapply(seq_along(sleep_merged_list), function(i) {
     create_aim_datasets(
       df = sleep_merged_list[[i]],
-      # no_sm_2y_ids = no_sm_2y_ids,
-      # no_sm_3y_ids = no_sm_3y_ids,
       smartphone_vars = smartphone_vars,
       merged_data = merged_data,
       imputation_id = i,
@@ -280,8 +260,6 @@ get_fully_imp_data <- function(merged_data) {
   aim_bpm_list <- lapply(seq_along(bpm_merged_list), function(i) {
     create_aim_datasets(
       df = bpm_merged_list[[i]],
-      # no_sm_2y_ids = no_sm_2y_ids,
-      # no_sm_3y_ids = no_sm_3y_ids,
       smartphone_vars = smartphone_vars,
       merged_data = merged_data,
       imputation_id = i,
@@ -294,6 +272,5 @@ get_fully_imp_data <- function(merged_data) {
   saveRDS(aim_sleep_list, "data/aim_sleep_list_non_imp_DV.rds")
   saveRDS(aim_bpm_list, "data/aim_bpm_list_non_imp_DV.rds")
   
-  # return(list(aim_dep_list = aim_dep_list, aim_obesity_list = aim_obesity_list, aim_sleep_list = aim_sleep_list))
 }
 

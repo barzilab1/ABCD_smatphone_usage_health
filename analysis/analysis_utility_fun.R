@@ -1,7 +1,4 @@
 
-
-
-
 # Data reading, manipulation and functional programming
 library(readr)        # For fast CSV file import (read_csv)
 library(dplyr)        # For filtering, selecting, mutating, joining data frames
@@ -10,7 +7,6 @@ library(purrr)        # For mapping functions over lists (map, map_dfr)
 
 # Modeling
 library(lme4)         # For fitting linear and generalized linear mixed-effects models (lmer, glmer)
-library(lavaan)       # For structural equation modeling (SEM), used in mediation analysis
 
 # Model output and reporting
 library(sjPlot)       # For creating regression tables from lmer/glmer models (tab_model)
@@ -20,35 +16,13 @@ library(naniar)  # For extracting tidy summaries from mixed-effect models (tidy)
 # Correlation analysis
 library(psych)        # For computing mixed-type correlation matrices (mixedCor)
 library(Hmisc)        # For calculating p-values for correlations (cor.mtest)
-library(corrplot)     # For visualizing correlation matrices
 
+# pooling results from multiple imputation
+library(tidyverse)
+library(mice)
+library(rvest)
+library(openxlsx)
 
-create_ever_var <- function(data, search_term, new_col_name, NA0is0 = FALSE) {
-  # Combine multiple search terms if provided
-  if (length(search_term) > 0) {
-    search_term <- paste0(search_term, collapse = "|")
-  }
-  
-  # Identify columns matching the pattern
-  matching_cols <- grepl(search_term, colnames(data))
-  
-  # Compute the 'ever' indicator as a vector
-  ever_vector <- as.integer(apply(data[, matching_cols], 1, function(x)
-    any(x == 1)))
-  
-  # Add new column to the data frame using dynamic column name
-  data[[new_col_name]] <- ever_vector
-  
-  # Optional: set NA to 0 if there are any 0s in the row
-  if (NA0is0) {
-    replace_na_vector <- ifelse(is.na(data[[new_col_name]]) &
-                                  apply(data[, matching_cols], 1, function(x)
-                                    any(x == 0)), 0, data[[new_col_name]])
-    data[[new_col_name]] <- replace_na_vector
-  }
-  
-  return(data)
-}
 
 
 get_model <- function(data,
@@ -284,109 +258,6 @@ run_write_models <- function(data,
 
 
 
-generate_table1 <- function(data,
-                            vars,
-                            strata,
-                            factor_vars = NULL,
-                            event_name = NULL,
-                            nonnormal_vars = NULL,
-                            output_prefix = NULL,
-                            digits = 2) {
-  # if digits = 1 then we can round later
-  # include_na = TRUE to get the % and include_na = FALSE to get p-values
-  
-  if (!is.null(event_name)) {
-    data <- data %>% filter(eventname == event_name)
-  }
-  
-  table <- CreateTableOne(
-    data = data,
-    strata = strata,
-    vars = vars,
-    factorVars = factor_vars,
-    includeNA = TRUE,
-    addOverall = TRUE
-  ) # for %. mean, median
-  
-  table_p_value <- CreateTableOne(
-    data = data,
-    strata = strata,
-    vars = vars,
-    factorVars = factor_vars,
-    includeNA = FALSE,
-    addOverall = TRUE
-  ) # for p-values
-  
-  
-  
-  table_df <- as.data.frame(
-    print(
-      table,
-      missing = TRUE,
-      pDigits = digits,
-      contDigits = digits,
-      catDigits = digits,
-      nonnormal = nonnormal_vars,
-      printToggle = F
-    )
-  )
-  table_df$variable <- rownames(table_df)
-  table_df$variable <- stringr::str_replace_all(table_df$variable, "^X...", "")
-  table_df$variable <- trimws(stringr::str_replace_all(table_df$variable, "\\..*", " "))
-  
-  table_p_value_df <- as.data.frame(
-    print(
-      table_p_value,
-      missing = TRUE,
-      pDigits = digits,
-      contDigits = digits,
-      catDigits = digits,
-      nonnormal = nonnormal_vars,
-      printToggle = F
-    )
-  )
-  table_p_value_df$description <- rownames(table_p_value_df)
-  table_p_value_df$variable <- trimws(stringr::str_replace_all(table_p_value_df$description, "( =|\\().*", ""))
-  colnames(table_p_value_df)[colnames(table_p_value_df) == "p"] = "p_value_no_na"
-  
-  
-  table1 = left_join(table_df, table_p_value_df[!is.na(table_p_value_df$description), c("variable", "description", "p_value_no_na")])
-  
-  # TODO check what are the options instead of 0 & 1:
-  table1 = table1[, c(
-    "variable",
-    "description",
-    "Overall",
-    "0",
-    "1",
-    "p",
-    "p_value_no_na",
-    "test",
-    "Missing"
-  )]
-  
-  
-  if (digits < 2) {
-    write.csv(table1,
-              paste0("results/table1_", output_prefix, ".csv"),
-              row.names = F)
-    return()
-  }
-  
-  # Get missing % with digits digits
-  table_missing <- miss_var_summary(data %>% select(all_of(vars)), digits = digits)
-  table_missing$pct_miss = as.numeric(table_missing$pct_miss)
-  # TODO print percentages nicely
-  table1$variable = stringr::str_replace_all(table1$variable, "\\.[0-9]+", "")
-  table1 = left_join(table1, table_missing)
-  write.csv(
-    table1,
-    paste0("results/table1_", output_prefix, ".csv"),
-    na = "",
-    row.names = F
-  )
-}
-
 
 make_forest_plot <- function(df,
                              x,
@@ -436,77 +307,7 @@ make_forest_plot <- function(df,
 }
 
 
-prep_forest_activities <- function(df, outcome_levels, top_predictor = "Social media") {
-  df %>%
-    mutate(
-      Outcome = factor(Outcome, levels = outcome_levels),
-      sort_key = ifelse(Predictor == top_predictor, Inf, OR)
-    ) %>%
-    group_by(Outcome) %>%
-    arrange(desc(sort_key), .by_group = TRUE) %>%
-    mutate(Predictor = factor(Predictor, levels = rev(unique(Predictor)))) %>%
-    ungroup() %>%
-    select(-sort_key)
-}
 
-
-make_forest_plot_activities <- function(df,
-                                        x = OR,
-                                        y = Predictor,
-                                        xmin = CI_low,
-                                        xmax = CI_high,
-                                        color = "darkblue",
-                                        x_breaks = seq(0.6, 1.8, 0.2),
-                                        facet_var = Outcome,
-                                        title = "") {
-  ggplot(df, aes(x = {{ x }}, y = {{ y }})) +
-    geom_vline(
-      xintercept = 1,
-      linetype = "dashed",
-      color = "#B22222",
-      linewidth = 1.3
-    ) +
-    geom_errorbarh(
-      aes(xmin = {{ xmin }}, xmax = {{ xmax }}),
-      height = 0.15,
-      size = 1.3,
-      color = color
-    ) +
-    geom_point(size = 5, color = color) +
-    scale_x_continuous(name = "Odds Ratio (95% Confidence Interval)",
-                       breaks = x_breaks,
-                       limits = c(min(x_breaks), max(x_breaks))) +
-    labs(title = title, y = "") +
-    theme_abcd() +
-    facet_wrap(vars({{ facet_var }}), ncol = 1, scales = "free_y") +
-    theme(strip.text = element_text(size = 20, face = "bold"))
-}
-
-
-make_ci_barplot <- function(df,
-                            x = Category,
-                            y = mean,
-                            lower = CI_lower,
-                            upper = CI_upper,
-                            fill_palette = "Set2",
-                            ylab = "Hours/week (Mean & 95% CI)") {
-  ggplot(df, aes(x = {{ x }}, y = {{ y }}, fill = {{ x }})) +
-    geom_col(width = 0.65, color = "white") +
-    geom_errorbar(aes(ymin = {{ lower }}, ymax = {{ upper }}), width = 0.2, size = 1.0) +
-    scale_fill_brewer(palette = fill_palette) +
-    labs(x = "", y = ylab) +
-    theme_abcd() +
-    theme(
-      legend.position = "none",
-      axis.text.x = element_text(
-        angle = 45,
-        hjust = 1,
-        size = 14,
-        face = "bold"
-      ),
-      axis.title.y = element_text(size = 22, face = "bold")
-    )
-}
 
 # https://rdrr.io/cran/mice/src/R/pool.vector.R
 # Rubin's rules for scalar estimates
@@ -566,15 +367,8 @@ pool_MI <- function(input_table, digits = 2, is_OR = T) {
 
 
 
-library(xml2)
-library(rvest)
-library(dplyr)
-library(purrr)
-library(stringr)
-library(openxlsx)
-
-calculate_pool_MI_from_table <- function(file_names, M=5, path = "results", is_OR=T) {
-  files <- paste0(file_names, 1:M, ".xls")
+calculate_pool_MI_from_table <- function(file_prefix, M=5, path = "results", is_OR=T) {
+  files <- paste0(file_prefix, 1:M, ".xls")
   
   #1. READ FILES
   read_html_excel <- function(file) {
@@ -641,12 +435,8 @@ calculate_pool_MI_from_table <- function(file_names, M=5, path = "results", is_O
     final_table[pooled_res$outcome, p_cols[k]]  <- pooled_res$p
   }
   
-  # 5. WRITE REAL EXCEL FILE
-  wb <- createWorkbook()
-  addWorksheet(wb, "Pooled results")
-  
-  writeData(wb, sheet = "Pooled results", x = cbind(rownames(final_table), final_table))
-  
-  saveWorkbook(wb, paste0(path, "/", file_names, "_POOLED.xlsx"), overwrite = TRUE)
+  # Export
+  out_path <- file.path(path, paste0(file_prefix, "_POOLED.xlsx"))
+  write.xlsx(cbind(rownames(final_table), final_table), out_path, overwrite = TRUE)
   
 }

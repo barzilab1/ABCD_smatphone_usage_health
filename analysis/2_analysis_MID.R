@@ -15,22 +15,6 @@ covariates_list_aim2_2y <- readRDS("data/covariates_list_aim2_2y.rds")
 
 random_effects_s <- "(1 | site_br/family_id_br)"
 
-IVs_aim2 <- c(
-  "watch_stream_TV_shows_movies_smartph_wsum", #streaming
-  "single_player_video_games_smartph_wsum", # video games
-  "multiplayer_video_games_smartph_wsum", # video games
-  "text_cellphone_others_smartph_wsum", # texting
-  "visit_social_media_apps_smartph_wsum", # visiting social media sites
-  "video_chat_not_for_school_smartph_wsum", # video-chatting
-  "schoolyear_total_school_related_work_smartph_wsum" # school-related work
-)
-
-IVs_aim2 <- map_chr(IVs_aim2, ~ paste0("scale(", .x, ")"))
-
-
-DVs <- c("depression_dx_y", "bmi_obesity", "lack_sleep")
-IVs_aim2_sens2 <- paste(IVs_aim2, collapse = " + ")
-
 
 # eTable 2----
 for (i in 1:5) {

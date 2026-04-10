@@ -19,7 +19,8 @@ tar_option_set(
                "janitor",
                "cdcanthro",
                "data.table",
-               "fastDummies"
+               "fastDummies",
+               "miceRanger"
                ),
   format = "feather" # default format, unless specifically specified in targets
   #
@@ -62,6 +63,5 @@ list(
 
   # Create long data for models/analyses
   tar_target(data_models, get_mod_data(merged_data), format = "rds"),
-  tar_target(data_fully_imp_models, get_fully_imp_data(merged_data), format = "rds"),
-  tar_target(data_non_imp_DV_models, get_non_imp_DV_data(merged_data), format = "rds")
+  tar_target(data_imp, get_imp_data(merged_data), format = "rds")
 )
