@@ -59,10 +59,10 @@ ggsave("plots/figure1.pdf", fig_aim1, width = 12, height = 8, dpi = 320)
 df_aim2 <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
-  OR      = c(1.23, 1.46, 1.31),
-  CI_low  = c(1.01, 1.16, 1.14),
-  CI_high = c(1.50, 1.82, 1.50),
-  N       = c(1041, 1052, 1168)
+  OR      = c(1.23, 1.43, 1.30),
+  CI_low  = c(1.01, 1.14, 1.13),
+  CI_high = c(1.49, 1.80, 1.48),
+  N       = c(1097, 1108, 1228)
 )
 
 fig_aim2 <- make_forest_plot(
@@ -86,8 +86,8 @@ ggsave("plots/figure2.pdf", fig_aim2, width = 12, height = 8, dpi = 320)
 #  FIGURE 3----
 df_depression_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",   1.48, 0.93, 2.37, 1041,
-  ">5h/day",    2.28, 1.16, 4.45, 1041
+  "2-5h/day",   1.45, 0.91, 2.31, 1097,
+  ">5h/day",    2.25, 1.16, 4.36, 1097
 ) %>%
   mutate(
     Category = factor(Category,
@@ -111,8 +111,8 @@ fig_depression_dos <- make_forest_plot(
 
 df_obesity_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",  1.19, 0.72, 1.99, 1052,
-  ">5h/day",   3.17, 1.58, 6.36, 1052
+  "2-5h/day",  1.23, 0.72, 2.10, 1108,
+  ">5h/day",   3.01, 1.51, 6.01, 1108
 ) %>%
   mutate(
     Category = factor(Category,
@@ -137,8 +137,8 @@ fig_obesity_dos <- make_forest_plot(
 
 df_sleep_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",  1.66, 1.23, 2.24, 1168,
-  ">5h/day",   2.08, 1.33, 3.26, 1168
+  "2-5h/day",  1.64, 1.22, 2.20, 1228,
+  ">5h/day",   2.01, 1.29, 3.14, 1228
 ) %>%
   mutate(
     Category = factor(Category,
@@ -186,10 +186,10 @@ ggsave("plots/figure_3.pdf", figure_3, width = 12, height = 20, dpi = 320)
 df_outside_room <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
-  OR      = c(0.87, 0.86, 0.66),
-  CI_low  = c(0.52, 0.50, 0.48),
-  CI_high = c(1.45, 1.45, 0.90),
-  N       = c(1040, 1049, 1167)
+  OR      = c(0.81, 0.89, 0.63),
+  CI_low  = c(0.49, 0.53, 0.46),
+  CI_high = c(1.33, 1.50, 0.85),
+  N       = c(1097, 1108, 1228)
 )
 
 fig_df_outside_room <- make_forest_plot(
