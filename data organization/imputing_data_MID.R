@@ -1,13 +1,12 @@
 # LIBRARY----
-# library(readr)
-# library(purrr)
-# library(tidyr)
-# library(stringr)
-# library(dplyr)
-# library(targets)
-# library(mice)
-# library(miceRanger)
-# source("data organization/data_utility_fun.R")
+library(readr)
+library(purrr)
+library(tidyr)
+library(stringr)
+library(dplyr)
+library(targets)
+library(miceRanger)
+source("data organization/data_utility_fun.R")
 
 get_imp_data <- function(merged_data) {
   
@@ -40,7 +39,8 @@ get_imp_data <- function(merged_data) {
   merged_data_dep <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), depression_dx_y) %>% filter(session_id != "ses-03A")
   merged_data_obesity <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), bmi_obesity) %>% filter(session_id != "ses-03A")
   merged_data_sleep <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), sleep_duration_hrs)
-  merged_data_bpm <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), mh_y_bpm_tscore, depression_dx_y)
+  # merged_data_bpm <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), mh_y_bpm_tscore, depression_dx_y)
+  merged_data_bpm <- merged_data %>% filter(participant_id %in% cohort_ids) %>% select(participant_id, session_id, all_of(covars), all_of(IVs), mh_y_bpm_tscore)
   
   set.seed(032426)
   merged_data_imp_dep <- miceRanger(merged_data_dep, m = 5, maxiter = 10, verbose = FALSE)
@@ -55,6 +55,7 @@ get_imp_data <- function(merged_data) {
   # merged_data_imp_dep <- readRDS("data/merged_data_imp_dep_cohort.rds")
   # merged_data_imp_obesity <- readRDS("data/merged_data_imp_obesity_cohort.rds")
   # merged_data_imp_sleep <- readRDS("data/merged_data_imp_sleep_cohort.rds")
+  # merged_data_imp_bpm <- readRDS("data/merged_data_imp_bpm_cohort.rds")
   
   
   # ONLY USE IMPUTED baseline DVs, IVs and covariates
@@ -108,7 +109,6 @@ get_imp_data <- function(merged_data) {
     })
   }
   
-  
   dep_merged_list <- merge_imputed_back(
     imp_obj = merged_data_imp_dep,
     original_df = merged_data %>% filter(participant_id %in% cohort_ids),
@@ -136,7 +136,7 @@ get_imp_data <- function(merged_data) {
   bpm_merged_list <- merge_imputed_back(
     imp_obj = merged_data_imp_bpm,
     original_df = merged_data %>% filter(participant_id %in% cohort_ids),
-    vars_to_replace = c("mh_y_bpm_tscore", "depression_dx_y"),
+    vars_to_replace = "mh_y_bpm_tscore",
     covars = covars,
     IVs = IVs
   )

@@ -28,40 +28,40 @@ theme_abcd <- function(base_size = 18) {
 
 #  FIGURE 1----
 ## No need in the revision # May remove later
-df_aim1 <- tibble(
-  Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
-                   levels = c("Insufficient Sleep", "Obesity", "Depression")),
-  OR      = c(1.24, 0.91, 1.37),
-  CI_low  = c(0.82, 0.57, 1.06),
-  CI_high = c(1.87, 1.45, 1.76),
-  N       = c(1515, 1319, 1676)
-)
+# df_aim1 <- tibble(
+#   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
+#                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
+#   OR      = c(1.24, 0.91, 1.37),
+#   CI_low  = c(0.82, 0.57, 1.06),
+#   CI_high = c(1.87, 1.45, 1.76),
+#   N       = c(1515, 1319, 1676)
+# )
+# 
+# fig_aim1 <- make_forest_plot(
+#   df_aim1,
+#   x = OR,
+#   y = Outcome,
+#   xmin = CI_low,
+#   xmax = CI_high,
+#   n_var = N,
+#   min_x = 0.4,
+#   max_x = 2.05,
+#   x_breaks = seq(0.5, 2.0, 0.5),
+#   title = "Past-Year Smartphone Acquisition"
+# )
+# 
+# ggsave("plots/figure1.pdf", fig_aim1, width = 12, height = 8, dpi = 320)
 
-fig_aim1 <- make_forest_plot(
-  df_aim1,
-  x = OR,
-  y = Outcome,
-  xmin = CI_low,
-  xmax = CI_high,
-  n_var = N,
-  min_x = 0.4,
-  max_x = 2.05,
-  x_breaks = seq(0.5, 2.0, 0.5),
-  title = "Past-Year Smartphone Acquisition"
-)
-
-ggsave("plots/figure1.pdf", fig_aim1, width = 12, height = 8, dpi = 320)
 
 
-
-#  FIGURE 2----
-
+#  FIGURE 1----
+## eTable 3
 df_aim2 <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
-  OR      = c(1.23, 1.43, 1.30),
-  CI_low  = c(1.01, 1.14, 1.13),
-  CI_high = c(1.49, 1.80, 1.48),
+  OR      = c(1.22, 1.34, 1.28),
+  CI_low  = c(1.005, 1.09, 1.12),
+  CI_high = c(1.8, 1.65, 1.47),
   N       = c(1097, 1108, 1228)
 )
 
@@ -80,14 +80,15 @@ fig_aim2 <- make_forest_plot(
 )
 
 
-ggsave("plots/figure2.pdf", fig_aim2, width = 12, height = 8, dpi = 320)
+ggsave("plots/figure1.pdf", fig_aim2, width = 12, height = 8, dpi = 320)
 
 
-#  FIGURE 3----
+#  FIGURE 2----
+## eTable 6
 df_depression_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",   1.45, 0.91, 2.31, 1097,
-  ">5h/day",    2.25, 1.16, 4.36, 1097
+  "2-5h/day",   1.47, 0.93, 2.33, 1097,
+  ">5h/day",    2.27, 1.16, 4.43, 1097
 ) %>%
   mutate(
     Category = factor(Category,
@@ -111,7 +112,7 @@ fig_depression_dos <- make_forest_plot(
 
 df_obesity_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",  1.23, 0.72, 2.10, 1108,
+  "2-5h/day",  1.09, 0.68, 1.76, 1108,
   ">5h/day",   3.01, 1.51, 6.01, 1108
 ) %>%
   mutate(
@@ -137,8 +138,8 @@ fig_obesity_dos <- make_forest_plot(
 
 df_sleep_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
-  "2-5h/day",  1.64, 1.22, 2.20, 1228,
-  ">5h/day",   2.01, 1.29, 3.14, 1228
+  "2-5h/day",  1.63, 1.22, 2.18, 1228,
+  ">5h/day",   1.99, 1.28, 3.09, 1228
 ) %>%
   mutate(
     Category = factor(Category,
@@ -166,7 +167,7 @@ row1 <- ggarrange(fig_depression_dos, labels = c("A"), font.label = list(size = 
 row2 <- ggarrange(fig_obesity_dos, labels = c("B"), font.label = list(size = 24, color = "black"))
 row3 <- ggarrange(fig_sleep_dos, labels = c("C"), font.label = list(size = 24, color = "black"))
 
-figure_3 <- ggarrange(
+figure_2 <- ggarrange(
     row1,
     spacer,
     row2,
@@ -178,17 +179,17 @@ figure_3 <- ggarrange(
 )
 
 
-ggsave("plots/figure_3.pdf", figure_3, width = 12, height = 20, dpi = 320)
+ggsave("plots/figure_2.pdf", figure_2, width = 12, height = 20, dpi = 320)
 
 
-#  FIGURE 4----
-
+#  FIGURE 3----
+## eTable 7
 df_outside_room <- tibble(
   Outcome = factor(c("Depression", "Obesity", "Insufficient Sleep"),
                    levels = c("Insufficient Sleep", "Obesity", "Depression")),
-  OR      = c(0.81, 0.89, 0.63),
-  CI_low  = c(0.49, 0.53, 0.46),
-  CI_high = c(1.33, 1.50, 0.85),
+  OR      = c(0.80, 0.88, 0.64),
+  CI_low  = c(0.49, 0.53, 0.47),
+  CI_high = c(1.31, 1.46, 0.87),
   N       = c(1097, 1108, 1228)
 )
 
@@ -207,7 +208,7 @@ fig_df_outside_room <- make_forest_plot(
 )
 
 
-ggsave("plots/figure4.pdf", fig_df_outside_room, width = 12, height = 8, dpi = 320)
+ggsave("plots/figure_3.pdf", fig_df_outside_room, width = 12, height = 8, dpi = 320)
 
 
 

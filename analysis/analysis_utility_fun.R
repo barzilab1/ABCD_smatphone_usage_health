@@ -239,7 +239,7 @@ run_write_models <- function(data,
         tab_model(
           models,
           digits.rsq = 4,
-          digits.p = 3,
+          digits.p = 5,
           auto.label = FALSE,
           collapse.ci = FALSE,
           file = file_path,
@@ -311,7 +311,7 @@ make_forest_plot <- function(df,
 
 # https://rdrr.io/cran/mice/src/R/pool.vector.R
 # Rubin's rules for scalar estimates
-pool_MI <- function(input_table, digits = 2, is_OR = T) {
+pool_MI <- function(input_table, digits = 4, is_OR = T) {
   long_df <- input_table %>%
     pivot_longer(
       cols = -outcome,

@@ -6,15 +6,14 @@ source("analysis/analysis_utility_fun.R")
 aim_dep_list <- readRDS("data/aim_dep_list_non_imp_DV.rds")
 aim_obesity_list <- readRDS("data/aim_obesity_list_non_imp_DV.rds")
 aim_sleep_list <- readRDS("data/aim_sleep_list_non_imp_DV.rds")
+aim_bpm_list <- readRDS("data/aim_bpm_list_non_imp_DV.rds")
 
 covariates_list_aim1 <- readRDS("data/covariates_list_aim1.rds")
 covariates_list_aim1_sens <- readRDS("data/covariates_list_aim1_sens.rds")
 covariates_list_aim2 <- readRDS("data/covariates_list_aim2.rds")
 covariates_list_aim2_2y <- readRDS("data/covariates_list_aim2_2y.rds")
 
-
 random_effects_s <- "(1 | site_br/family_id_br)"
-
 
 # eTable 2----
 for (i in 1:5) {
@@ -298,22 +297,7 @@ calculate_pool_MI_from_table("DV__lack_sleep__eTable7_covar_weight_non_imputed_D
 
 aim_bpm_list <- readRDS("data/aim_bpm_list_non_imp_DV.rds")
 
-# eTable 14 bpm from 3yfu----
-for (i in 1:5) {
-  run_write_models(
-    data = aim_bpm_list[[i]]$aim1_df,
-    list_DVs = "depression_dx_y",
-    list_covars = covariates_list_aim1$mh_y_bpm_tscore,
-    random_eff = random_effects_s,
-    list_IVs = "smartphone_ownership",
-    binary_DV = TRUE,
-    ext = paste0("BPM_con_eTable14_MID",i),
-    CI_level = (1-0.05)
-  )
-}
-calculate_pool_MI_from_table("DV__depression_dx_y__BPM_con_eTable14_MID")
-
-# eTable 15 bpm as DV----
+# eTable 14 bpm as DV----
 for(i in 1:5) {
   run_write_models(
     data = aim_bpm_list[[i]]$aim1_df,
@@ -322,13 +306,13 @@ for(i in 1:5) {
     random_eff = random_effects_s,
     list_IVs = "smartphone_ownership",
     binary_DV = TRUE,
-    ext = paste0("BPM_con_eTable15_MID",i),
+    ext = paste0("BPM_con_eTable14_MID",i),
     CI_level = (1-0.05)
   )
 }
-calculate_pool_MI_from_table("DV__bpm_T_bin_concern__BPM_con_eTable15_MID")
+calculate_pool_MI_from_table("DV__bpm_T_bin_concern__BPM_con_eTable14_MID")
 
-#eTable 16 continues DVs
+#eTable 15 continues DVs----
 for(i in 1:5) {
   run_write_models(
     data = aim_bpm_list[[i]]$aim1_df,
@@ -337,7 +321,7 @@ for(i in 1:5) {
     random_eff = random_effects_s,
     list_IVs = "smartphone_ownership",
     binary_DV = F,
-    ext = paste0("eTable16_MID",i),
+    ext = paste0("eTable15_MID",i),
     CI_level = (1 - 0.05)
   )
   
@@ -348,7 +332,7 @@ for(i in 1:5) {
     random_eff = random_effects_s,
     list_IVs = "smartphone_ownership",
     binary_DV = F,
-    ext = paste0("eTable16_MID",i),
+    ext = paste0("eTable15_MID",i),
     CI_level = (1 - 0.05)
   )
   
@@ -360,27 +344,27 @@ for(i in 1:5) {
     random_eff = random_effects_s,
     list_IVs = "smartphone_ownership",
     binary_DV = F,
-    ext = paste0("eTable16_MID",i),
+    ext = paste0("eTable15_MID",i),
     CI_level = (1 - 0.05)
   )
 }
 
-calculate_pool_MI_from_table("DV__scale(mh_y_bpm_tscore)__eTable16_MID", is_OR = F)
-calculate_pool_MI_from_table("DV__scale(bmi)__eTable16_MID", is_OR = F)
-calculate_pool_MI_from_table("DV__scale(sleep_duration_hrs)__eTable16_MID", is_OR = F)
+calculate_pool_MI_from_table("DV__scale(mh_y_bpm_tscore)__eTable15_MID", is_OR = F)
+calculate_pool_MI_from_table("DV__scale(bmi)__eTable15_MID", is_OR = F)
+calculate_pool_MI_from_table("DV__scale(sleep_duration_hrs)__eTable15_MID", is_OR = F)
 
 
 # eTable 17 # EValues----
-aim2_df_no3y = readRDS("data/aim2_df_no2y.rds")
+aim2_df_no3y = readRDS("data/aim2_df_no3y.rds")
 prop.table(table(aim2_df_no3y$depression_dx_y)) * 100 # rare
 prop.table(table(aim2_df_no3y$lack_sleep)) * 100 # not rare
 prop.table(table(aim2_df_no3y$bmi_obesity)) * 100 # not rare
 
-print(as.data.frame(evalues.OR(1.23, 1.01, 1.49, rare = TRUE)) %>% 
-  mutate(outcome = "Depression diagnosis", prevalence =  prop.table(table(aim2_df_no3y$depression_dx_y))[2] * 100) %>%  #1.23	1.01–1.49
-  bind_rows(as.data.frame(evalues.OR(1.3, 1.13, 1.48, rare = FALSE)) %>% 
-              mutate(outcome = "Insufficient Sleep", prevalence = prop.table(table(aim2_df_no3y$lack_sleep))[2] * 100)) %>% #1.3	1.13–1.48	
-  bind_rows(as.data.frame(evalues.OR(1.43, 1.14, 1.8, rare = FALSE)) %>% 
-              mutate(outcome = "Obesity", prevalence = prop.table(table(aim2_df_no3y$bmi_obesity))[2] * 100)) # 1.43	1.14–1.8
+print(as.data.frame(evalues.OR(1.22, 1.005, 1.8, rare = TRUE)) %>% 
+  mutate(outcome = "Depression diagnosis", prevalence =  prop.table(table(aim2_df_no3y$depression_dx_y))[2] * 100) %>%  #1.22	1.005–1.8
+  bind_rows(as.data.frame(evalues.OR(1.28, 1.12, 1.47, rare = FALSE)) %>% 
+              mutate(outcome = "Insufficient Sleep", prevalence = prop.table(table(aim2_df_no3y$lack_sleep))[2] * 100)) %>% #1.28	1.12–1.47	
+  bind_rows(as.data.frame(evalues.OR(1.34, 1.09, 1.65, rare = FALSE)) %>% 
+              mutate(outcome = "Obesity", prevalence = prop.table(table(aim2_df_no3y$bmi_obesity))[2] * 100)) # 1.34	1.09–1.65
 )
 

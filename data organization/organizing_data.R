@@ -10,68 +10,8 @@
 get_mod_data <- function(merged_data) {
 
   # Covariates for Aim 1----
-  # covars_1 <- c("age_br", "sex_br")
-  # 
-  # covars_2 <- c(
-  #   covars_1,
-  #   "race_black", "ethnicity_hisp_br",
-  #   "household_income", "parents_high_edu_br",
-  #   "puberty_both_sexes", "fc_y_pm_mean",
-  #   "nt_p_yst_001___2", "nt_p_yst_001___3",
-  #   "nt_p_yst_001___4", "nt_p_yst_001___6"
-  # )
-  # 
-  # names_covars <- c("depression_dx_y", "bmi_obesity", "lack_sleep")
-  # 
-  # add_aim1_main <- c(
-  #   depression_dx_y = "depression_dx_y_2y",
-  #   bmi_obesity     = "bmi_obesity_3y",
-  #   lack_sleep      = "sleep_duration_hrs_3y",
-  #   mh_y_bpm_tscore = "scale(mh_y_bpm_tscore_3y)",
-  #   bmi = "scale(bmi_2y)"
-  # )
-  # 
-  # covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, add_aim1_main, c(names_covars, "mh_y_bpm_tscore", "bmi"))
-  # 
-  # add_aim1_sens <- add_aim1_main
-  # add_aim1_sens["depression_dx_y"] <- "bpm_T_bin_concern_3y"
-  # 
-  # covariates_list_aim1_sens <- make_cov_list(covars_1, covars_2, add_aim1_sens, names_covars)
-  # 
-  # # Covariates for Aim 2----
-  # add_aim2 <- c(
-  #   depression_dx_y = "depression_dx_y_2y",
-  #   bmi_obesity     = "bmi_obesity_3y",
-  #   lack_sleep      = "sleep_duration_hrs_3y"
-  # )
-  # 
-  # covariates_list_aim2_main <- make_cov_list(covars_1, covars_2, add_aim2, names_covars)
-  # 
-  # add_aim2_sen <- c(
-  #     depression_dx_y = "depression_dx_y_2y",
-  #     bmi_obesity     = "bmi_obesity_2y",
-  #     lack_sleep      = "sleep_duration_hrs_2y"
-  # )
-  # 
-  # covariates_list_aim2_2y <- make_cov_list(covars_1, covars_2, add_aim2_sen, names_covars)
-  
-  
-  ## WILL REMOVE LATER. THE WEIGHT ##
-  make_cov_list <- function(c1, c2, c3, add_vars, names_covars) { # revision
-    setNames(
-      map(names_covars, ~ list(
-        covars_0 = c1,
-        covars_1 = c(c1, add_vars[[.x]]),
-        covars_2 = c(c2, add_vars[[.x]]),
-        covars_3 = c(c3, add_vars[[.x]])
-      )),
-      names_covars
-    )
-  }
-  
-  
   covars_1 <- c("age_br", "sex_br")
-  
+
   covars_2 <- c(
     covars_1,
     "race_black", "ethnicity_hisp_br",
@@ -80,11 +20,9 @@ get_mod_data <- function(merged_data) {
     "nt_p_yst_001___2", "nt_p_yst_001___3",
     "nt_p_yst_001___4", "nt_p_yst_001___6"
   )
-  
-  covars_3 <- c(covars_2, "abcd_pps_weight") # revision
-  
+
   names_covars <- c("depression_dx_y", "bmi_obesity", "lack_sleep")
-  
+
   add_aim1_main <- c(
     depression_dx_y = "depression_dx_y_2y",
     bmi_obesity     = "bmi_obesity_3y",
@@ -92,38 +30,31 @@ get_mod_data <- function(merged_data) {
     mh_y_bpm_tscore = "scale(mh_y_bpm_tscore_3y)",
     bmi = "scale(bmi_2y)"
   )
-  
-  # covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, add_aim1_main, c(names_covars, "mh_y_bpm_tscore", "bmi"))
-  covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, covars_3, add_aim1_main, c(names_covars, "mh_y_bpm_tscore", "bmi")) # revision
-  
+
+  covariates_list_aim1_main <- make_cov_list(covars_1, covars_2, add_aim1_main, c(names_covars, "mh_y_bpm_tscore", "bmi"))
+
   add_aim1_sens <- add_aim1_main
   add_aim1_sens["depression_dx_y"] <- "bpm_T_bin_concern_3y"
-  
-  # covariates_list_aim1_sens <- make_cov_list(covars_1, covars_2, add_aim1_sens, names_covars)
-  covariates_list_aim1_sens <- make_cov_list(covars_1, covars_2, covars_3, add_aim1_sens, names_covars) # revision
-  
+
+  covariates_list_aim1_sens <- make_cov_list(covars_1, covars_2, add_aim1_sens, names_covars)
+
   # Covariates for Aim 2----
   add_aim2 <- c(
     depression_dx_y = "depression_dx_y_2y",
     bmi_obesity     = "bmi_obesity_3y",
     lack_sleep      = "sleep_duration_hrs_3y"
   )
-  
-  # covariates_list_aim2_main <- make_cov_list(covars_1, covars_2, add_aim2, names_covars)
-  covariates_list_aim2_main <- make_cov_list(covars_1, covars_2, covars_3, add_aim2, names_covars) # revision
-  
-  add_aim2_sen <- c(
-    depression_dx_y = "depression_dx_y_2y",
-    bmi_obesity     = "bmi_obesity_2y",
-    lack_sleep      = "sleep_duration_hrs_2y"
-  )
-  
-  # covariates_list_aim2_2y <- make_cov_list(covars_1, covars_2, add_aim2_sen, names_covars)
-  covariates_list_aim2_2y <- make_cov_list(covars_1, covars_2, covars_3, add_aim2_sen, names_covars) # revision
-  ## WILL REMOVE LATER. THE WEIGHT ##
-  
-  
 
+  covariates_list_aim2_main <- make_cov_list(covars_1, covars_2, add_aim2, names_covars)
+
+  add_aim2_sen <- c(
+      depression_dx_y = "depression_dx_y_2y",
+      bmi_obesity     = "bmi_obesity_2y",
+      lack_sleep      = "sleep_duration_hrs_2y"
+  )
+
+  covariates_list_aim2_2y <- make_cov_list(covars_1, covars_2, add_aim2_sen, names_covars)
+  
   # Create data for 2 aims----
   # filter kids with phone that isn't smartphone
   merged_data <- merged_data %>% filter((smartphone_ownership == 1 & nt_p_yst_001__02 %in% c(1, 2)) | smartphone_ownership == 0)

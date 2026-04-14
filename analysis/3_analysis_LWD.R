@@ -22,6 +22,8 @@ IVs_aim2 <- c(
   "schoolyear_total_school_related_work_smartph_wsum" # school-related work
 )
 
+IVs_aim2 <- paste0("scale(", IVs_aim2, ")")
+
 
 # Descriptive----
 ## Correlation of 2 measures of total smartphone use
@@ -130,10 +132,20 @@ run_write_models(
   list_covars = covariates_list_aim2$depression_dx_y,
   random_eff = random_effects_s,
   binary_DV = TRUE,
-  ext = "eTable11_12",
+  ext = "eTable11",
   CI_level = (1-0.05)
 )
 
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = c("scale(schoolyear_total_smartph_wsum)", "scale(schoolyear_total_smartph_wsum)*sex_br"),
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable11",
+  CI_level = (1-0.05)
+)
 
 run_write_models(
   data = aim2_df_no3y,
@@ -142,10 +154,43 @@ run_write_models(
   list_covars = covariates_list_aim2$lack_sleep,
   random_eff = random_effects_s,
   binary_DV = TRUE,
-  ext = "eTable11_12",
+  ext = "eTable11",
   CI_level = (1-0.05)
 )
 
+# eTable 12----
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "depression_dx_y",
+  list_IVs = "schoolyear_total_smartph_wsum_wmean_perday_cat",
+  list_covars = covariates_list_aim2$depression_dx_y,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable12",
+  CI_level = (1-0.05)
+)
+
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = "schoolyear_total_smartph_wsum_wmean_perday_cat",
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable12",
+  CI_level = (1-0.05)
+)
+
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "lack_sleep",
+  list_IVs = "schoolyear_total_smartph_wsum_wmean_perday_cat",
+  list_covars = covariates_list_aim2$lack_sleep,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable12",
+  CI_level = (1-0.05)
+)
 
 # eTable 13----
 run_write_models(
@@ -153,6 +198,17 @@ run_write_models(
   list_DVs = "depression_dx_y",
   list_IVs = c("nt_y_stq__sleep_002_phone_outside_room"),
   list_covars = covariates_list_aim2$depression_dx_y,
+  random_eff = random_effects_s,
+  binary_DV = TRUE,
+  ext = "eTable13",
+  CI_level = (1-0.05)
+)
+
+run_write_models(
+  data = aim2_df_no3y,
+  list_DVs = "bmi_obesity",
+  list_IVs = c("nt_y_stq__sleep_002_phone_outside_room"),
+  list_covars = covariates_list_aim2_2y$bmi_obesity,
   random_eff = random_effects_s,
   binary_DV = TRUE,
   ext = "eTable13",
