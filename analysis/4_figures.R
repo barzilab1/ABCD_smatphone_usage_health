@@ -113,7 +113,7 @@ fig_depression_dos <- make_forest_plot(
 df_obesity_dos <- tribble(
   ~Category,  ~OR, ~CI_low, ~CI_high, ~N,
   "2-5h/day",  1.09, 0.68, 1.76, 1108,
-  ">5h/day",   3.01, 1.51, 6.01, 1108
+  ">5h/day",   2.66, 1.38, 5.13, 1108
 ) %>%
   mutate(
     Category = factor(Category,
