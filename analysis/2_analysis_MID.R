@@ -61,6 +61,28 @@ calculate_pool_MI_from_table("DV__lack_sleep__eTable2_weight_non_imputed_DV")
 
 
 # eTable 3 and 4----
+## Frequency of outcomes
+get_outcome_table <- function(data, var_y, var_2y) {
+  table(data[[var_y]][!is.na(data[[var_2y]])])
+}
+
+lapply(1:5, function(i) {
+  df <- aim_dep_list[[i]]$aim2_df_no3y
+  get_outcome_table(df, "depression_dx_y", "depression_dx_y_2y")
+})
+
+
+lapply(1:5, function(i) {
+  df <- aim_obesity_list[[i]]$aim2_df_no3y
+  get_outcome_table(df, "bmi_obesity", "bmi_obesity_2y")
+})
+
+lapply(1:5, function(i) {
+  df <- aim_sleep_list[[i]]$aim2_df_no3y
+  get_outcome_table(df, "lack_sleep", "sleep_duration_hrs_3y")
+})
+
+
 for (i in 1:5) {
   run_write_models(
     data = aim_dep_list[[i]]$aim2_df_no3y,
